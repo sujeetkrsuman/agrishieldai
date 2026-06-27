@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriShield AI | Multimodal Crop Advisory & Disease Diagnosis Agent</title>
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-mode">
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
+          <path d="M12 4V8M12 16V20M4 12H8M16 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div class="brand-text">
+          <h1>AgriShield AI</h1>
+          <span>Autonomous Agro-Agent</span>
+        </div>
+      </div>
+      
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="diagnosis">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          <span>Diagnostic Lab</span>
+        </button>
+        <button class="nav-item" data-tab="chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>Voice Advisor</span>
+        </button>
+        <button class="nav-item" data-tab="optimizer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          <span>Soil & Irrigation</span>
+        </button>
+        <button class="nav-item" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="mode-badge" id="mode-status">Demo Mode</div>
+        <div class="avatar-container">
+          <div class="avatar-status-dot online"></div>
+          <span class="avatar-text">AI Agent Core v1.5</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="main-content">
+      
+      <!-- Top header bar -->
+      <header class="top-bar">
+        <div class="crop-selector-container">
+          <label for="crop-select">Active Crop Monitoring:</label>
+          <select id="crop-select" class="dropdown-style">
+            <option value="tomato" selected>🍅 Tomato (Optimal: 20-30°C, 60-80% Soil Moist.)</option>
+            <option value="potato">🥔 Potato (Optimal: 15-25°C, 50-70% Soil Moist.)</option>
+            <option value="corn">🌽 Corn / Maize (Optimal: 18-32°C, 55-75% Soil Moist.)</option>
+            <option value="wheat">🌾 Wheat (Optimal: 12-25°C, 45-65% Soil Moist.)</option>
+            <option value="rice">🍚 Rice (Optimal: 22-35°C, 75-95% Soil Moist.)</option>
+          </select>
+        </div>
+        <div class="header-actions">
+          <span class="date-display" id="date-display">June 27, 2026</span>
+          <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">
+            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <div class="content-body">
+        
+        <!-- ==================== TAB: DASHBOARD ==================== -->
+        <section id="tab-dashboard" class="tab-panel active">
+          <div class="hero-card">
+            <div class="hero-content">
+              <h2>Autonomous Agriculture Environment Dashboard</h2>
+              <p>Simulate localized conditions or load real-time environment telemetry to review agent-guided recommendations.</p>
+              <div class="health-gauge-container">
+                <span class="health-label">Crop Health Index</span>
+                <div class="progress-ring-wrapper">
+                  <div class="progress-text" id="health-value">92%</div>
+                  <svg class="progress-ring" width="120" height="120">
+                    <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.05)" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
+                    <circle id="health-progress-ring" class="progress-ring__circle" stroke="#10b981" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
+                  </svg>
+                </div>
+                <div class="health-status" id="health-desc">Optimal Balance</div>
+              </div>
+            </div>
+            <div class="hero-decorative"></div>
+          </div>
+
+          <div class="dashboard-grid">
+            <!-- Parameter Simulators -->
+            <div class="glass-card simulation-panel">
+              <div class="card-header">
+                <h3>Environmental Telemetry Simulator</h3>
+                <span class="badge badge-accent">Live Controls</span>
+              </div>
+              <div class="simulator-sliders">
+                <div class="slider-group">
+                  <div class="slider-label">
+                    <span>🌡️ Temperature</span>
+                    <span class="val-display" id="sim-temp-val">26°C</span>
+                  </div>
+                  <input type="range" id="sim-temp" min="5" max="45" value="26" class="slider-input">
+                  <div class="optimal-marker" id="temp-opt-marker">Optimal range: 20-30°C</div>
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-label">
+                    <span>💧 Soil Moisture</span>
+                    <span class="val-display" id="sim-moist-val">65%</span>
+                  </div>
+                  <input type="range" id="sim-moist" min="10" max="100" value="65" class="slider-input">
+                  <div class="optimal-marker" id="moist-opt-marker">Optimal range: 60-80%</div>
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-label">
+                    <span>☁️ Relative Humidity</span>
+                    <span class="val-display" id="sim-humid-val">68%</span>
+                  </div>
+                  <input type="range" id="sim-humid" min="20" max="100" value="68" class="slider-input">
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-label">
+                    <span>☀️ Sunlight Exposure</span>
+                    <span class="val-display" id="sim-sun-val">Moderate</span>
+                  </div>
+                  <input type="range" id="sim-sun" min="1" max="3" value="2" class="slider-input">
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Agent Advisory Feed -->
+            <div class="glass-card advisory-panel">
+              <div class="card-header">
+                <h3>Autonomous Agent Advisories</h3>
+                <div class="status-indicator-wrapper">
+                  <span class="indicator-dot blinking green"></span>
+                  <span class="indicator-text">Real-time analysis active</span>
+                </div>
+              </div>
+              <div class="advisory-list" id="advisory-feed">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Weather & Forecast Widget -->
+          <div class="glass-card weather-forecast-card">
+            <div class="card-header">
+              <h3>Regional Weather Forecast (Simulated / Local)</h3>
+              <button id="location-fetch-btn" class="text-btn">📍 Get Geolocation</button>
+            </div>
+            <div class="weather-row">
+              <div class="current-weather-summary">
+                <div class="temp-huge" id="weather-temp">26°C</div>
+                <div class="weather-info">
+                  <span class="weather-cond" id="weather-cond">Partly Cloudy</span>
+                  <span class="weather-loc" id="weather-loc">Near New Delhi, IN</span>
+                </div>
+              </div>
+              <div class="forecast-days" id="forecast-container">
+                <!-- Dynamically generated -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB: DIAGNOSIS ==================== -->
+        <section id="tab-diagnosis" class="tab-panel">
+          <div class="section-desc-card">
+            <h2>Plant Disease Diagnosis Lab</h2>
+            <p>Empower your diagnostics with Computer Vision. Upload an image of a crop leaf or use the live camera feed. AgriShield AI will scan the pathogen and formulate detailed organic and chemical remedies.</p>
+          </div>
+
+          <div class="diagnosis-grid">
+            <div class="glass-card upload-workbench">
+              <div class="card-header">
+                <h3>Crop Image Workbench</h3>
+              </div>
+              
+              <!-- Tabs for Input Mode -->
+              <div class="workbench-tabs">
+                <button class="workbench-tab active" id="btn-mode-upload">📁 Upload Image</button>
+                <button class="workbench-tab" id="btn-mode-camera">📷 Use Camera</button>
+              </div>
+
+              <!-- Drag/Drop File Zone -->
+              <div class="upload-zone" id="drop-zone">
+                <input type="file" id="file-input" accept="image/*" style="display: none;">
+                <svg viewBox="0 0 24 24" class="upload-icon" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                <p class="upload-text">Drag & drop your leaf image here, or <span>browse files</span></p>
+                <p class="upload-hint">Supports PNG, JPG, JPEG (Max 10MB)</p>
+              </div>
+
+              <!-- Camera View -->
+              <div class="camera-zone" id="camera-zone" style="display: none;">
+                <video id="webcam-video" autoplay playsinline class="webcam-feed"></video>
+                <canvas id="photo-canvas" style="display: none;"></canvas>
+                <div class="camera-controls">
+                  <button id="btn-capture" class="btn btn-primary">📸 Take Photo</button>
+                  <button id="btn-stop-camera" class="btn btn-secondary">Turn Off</button>
+                </div>
+              </div>
+
+              <!-- Preview Zone -->
+              <div class="preview-zone" id="preview-zone" style="display: none;">
+                <img id="image-preview" src="#" alt="Leaf Preview">
+                <div class="preview-actions">
+                  <button id="btn-reset-preview" class="btn btn-secondary">Remove Image</button>
+                  <button id="btn-run-diagnosis" class="btn btn-success">🔬 Diagnose Plant Disease</button>
+                </div>
+              </div>
+
+              <!-- Sample Selection Carousel -->
+              <div class="samples-carousel-section">
+                <h4>No photo handy? Test with one of these crop samples:</h4>
+                <div class="sample-images-grid">
+                  <div class="sample-card" data-sample="tomato">
+                    <img src="assets/tomato_late_blight.png" alt="Tomato Late Blight">
+                    <span>Tomato Blight</span>
+                  </div>
+                  <div class="sample-card" data-sample="corn">
+                    <img src="assets/corn_rust.png" alt="Corn Rust">
+                    <span>Corn Rust</span>
+                  </div>
+                  <div class="sample-card" data-sample="healthy">
+                    <img src="assets/healthy_wheat.png" alt="Healthy Wheat">
+                    <span>Healthy Wheat</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Diagnosis Report Result Panel -->
+            <div class="glass-card result-panel" id="diagnosis-result-card">
+              <div class="result-placeholder" id="result-placeholder">
+                <svg viewBox="0 0 24 24" class="search-pulse" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <p>Upload a leaf image or click a sample to compile the AI Diagnostic Report.</p>
+              </div>
+
+              <!-- Diagnosis Result Loading Spinner -->
+              <div class="result-loading" id="result-loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>AgriShield AI is running computer vision analysis...</p>
+                <span class="loading-status-tip">Consulting agronomic database...</span>
+              </div>
+
+              <!-- Diagnostic Report (Hidden by default) -->
+              <div class="diagnostic-report" id="diagnostic-report" style="display: none;">
+                <div class="report-header">
+                  <div class="report-title-block">
+                    <span id="report-crop" class="report-crop-tag">Tomato</span>
+                    <h3 id="report-disease">Late Blight</h3>
+                    <span id="report-scientific" class="report-scientific-name">Phytophthora infestans</span>
+                  </div>
+                  <div class="report-stats">
+                    <div class="stat-pill">
+                      <span class="stat-label">Confidence</span>
+                      <strong id="report-confidence">94%</strong>
+                    </div>
+                    <div class="stat-pill">
+                      <span class="stat-label">Severity</span>
+                      <strong id="report-severity" class="severity-badge high">High</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="report-divider"></div>
+
+                <div class="report-body">
+                  <div class="report-section">
+                    <h4>📝 Pathology Description</h4>
+                    <p id="report-description">Late blight is a destructive disease of tomato crops caused by the oomycete Phytophthora infestans. It thrives in wet, cool conditions, causing dark green to black water-soaked lesions on leaves and large brown firm lesions on fruits.</p>
+                  </div>
+
+                  <div class="report-section remedies-grid">
+                    <div class="organic-box">
+                      <h5>🍃 Organic Control Methods</h5>
+                      <ul id="report-organic-list">
+                        <li>Prune infected stems immediately.</li>
+                        <li>Apply copper fungicide spray.</li>
+                      </ul>
+                    </div>
+                    <div class="chemical-box">
+                      <h5>🧪 Chemical Remedies</h5>
+                      <ul id="report-chemical-list">
+                        <li>Apply Mancozeb or Chlorothalonil.</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="report-section">
+                    <h4>🛡️ Preventive Practices</h4>
+                    <ul id="report-prevention-list">
+                      <li>Use drip irrigation.</li>
+                      <li>Crop rotation of 3 years.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="report-footer">
+                  <button id="btn-export-pdf" class="btn btn-secondary">📥 Export Report</button>
+                  <button id="btn-chat-with-advisor" class="btn btn-primary">💬 Discuss with AI Chatbot</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB: VOICE CHAT ==================== -->
+        <section id="tab-chat" class="tab-panel">
+          <div class="chat-container">
+            <div class="chat-sidebar">
+              <div class="chat-sidebar-header">
+                <h3>AgriShield Advisor</h3>
+                <p>Select your language and speak directly to the advisor.</p>
+              </div>
+
+              <!-- Language Select for Assistant -->
+              <div class="language-picker-box">
+                <label for="chat-language-select">🎙️ Speech Language:</label>
+                <select id="chat-language-select" class="dropdown-style">
+                  <option value="en" selected>English (US/UK)</option>
+                  <option value="hi">हिन्दी (Hindi)</option>
+                  <option value="te">తెలుగు (Telugu)</option>
+                  <option value="ta">தமிழ் (Tamil)</option>
+                  <option value="mr">मराठी (Marathi)</option>
+                  <option value="bn">বাংলা (Bengali)</option>
+                  <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                </select>
+              </div>
+
+              <!-- TTS Audio Feed Settings -->
+              <div class="tts-toggle-box">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="chat-voice-output" checked>
+                  <span class="slider"></span>
+                </label>
+                <span>🔊 Text-to-Speech Output</span>
+              </div>
+
+              <!-- Quick FAQs Chips -->
+              <div class="quick-questions-section">
+                <h4>Suggested Questions:</h4>
+                <div class="faq-chips">
+                  <button class="faq-chip" data-question="What is the optimal N-P-K fertilizer ratio for my crop?">🧪 Optimal N-P-K Ratio</button>
+                  <button class="faq-chip" data-question="How should I adjust watering based on low soil moisture?">💧 Irrigation Adjustment</button>
+                  <button class="faq-chip" data-question="How do I cure Late Blight on my crops organically?">🍂 Organic Blight Cure</button>
+                  <button class="faq-chip" data-question="What spacing is recommended for healthy crop aeration?">📏 Crop Spacing Tips</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-workbench">
+              <div class="chat-history" id="chat-history">
+                <!-- Welcome Message dynamically added -->
+              </div>
+
+              <!-- Status Info Overlay (for mic etc.) -->
+              <div class="chat-status-bar" id="chat-status-bar" style="display: none;">
+                <span class="pulse-red-dot"></span>
+                <span id="chat-status-text">Listening to voice input...</span>
+              </div>
+
+              <!-- Input Panel -->
+              <div class="chat-input-row">
+                <button id="btn-voice-input" class="voice-mic-btn" title="Speak to Agent">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                </button>
+                <input type="text" id="chat-text-input" placeholder="Type your farming question in any language..." autocomplete="off">
+                <button id="btn-send-message" class="btn btn-primary">Send</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB: SOIL & IRRIGATION ==================== -->
+        <section id="tab-optimizer" class="tab-panel">
+          <div class="section-desc-card">
+            <h2>Soil Chemistry & Irrigation Optimizer</h2>
+            <p>Balance nutrients, manage pH values, and determine daily crop watering budgets based on live environmental telemetry.</p>
+          </div>
+
+          <div class="optimizer-grid">
+            <!-- Soil Fertilizer Balancing -->
+            <div class="glass-card nutrient-balancer">
+              <div class="card-header">
+                <h3>Soil Chemistry Balancing (NPK & pH)</h3>
+              </div>
+              <div class="balancer-body">
+                <div class="input-row-3">
+                  <div class="number-input-group">
+                    <label for="soil-n">🍂 Nitrogen (N) (mg/kg)</label>
+                    <input type="number" id="soil-n" min="0" max="250" value="45">
+                  </div>
+                  <div class="number-input-group">
+                    <label for="soil-p">🧪 Phosphorus (P) (mg/kg)</label>
+                    <input type="number" id="soil-p" min="0" max="150" value="20">
+                  </div>
+                  <div class="number-input-group">
+                    <label for="soil-k">🌱 Potassium (K) (mg/kg)</label>
+                    <input type="number" id="soil-k" min="0" max="400" value="180">
+                  </div>
+                </div>
+                
+                <div class="slider-group">
+                  <div class="slider-label">
+                    <span>🧪 Soil pH Level</span>
+                    <strong class="val-display" id="soil-ph-val">5.5</strong>
+                  </div>
+                  <input type="range" id="soil-ph" min="4.0" max="9.0" step="0.1" value="5.5" class="slider-input">
+                </div>
+
+                <button id="btn-calculate-soil" class="btn btn-primary btn-full">Calculate Soil Balance & Adjustments</button>
+
+                <div class="soil-recommendation-report" id="soil-report" style="display: none;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Smart Irrigation Estimator -->
+            <div class="glass-card irrigation-estimator">
+              <div class="card-header">
+                <h3>Smart Water Budget Calculator</h3>
+                <span class="badge badge-success">Irrigation Optimizer</span>
+              </div>
+              <div class="estimator-body">
+                <div class="info-row">
+                  <span>Simulated Soil Moisture:</span>
+                  <strong id="opt-moist-display">65%</strong>
+                </div>
+                <div class="info-row">
+                  <span>Simulated Temperature:</span>
+                  <strong id="opt-temp-display">26°C</strong>
+                </div>
+                
+                <div class="crop-stage-select-box">
+                  <label for="crop-stage">Crop Growth Stage:</label>
+                  <select id="crop-stage" class="dropdown-style">
+                    <option value="seedling">Early Seedling (Kc: 0.45)</option>
+                    <option value="vegetative" selected>Active Vegetative (Kc: 0.85)</option>
+                    <option value="flowering">Flowering / Fruit Setting (Kc: 1.15)</option>
+                    <option value="maturity">Late Maturity / Harvest (Kc: 0.60)</option>
+                  </select>
+                </div>
+
+                <button id="btn-calculate-water" class="btn btn-accent btn-full">Calculate Water Volume Needed</button>
+
+                <div class="water-recommendation-report" id="water-report" style="display: none;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB: SETTINGS ==================== -->
+        <section id="tab-settings" class="tab-panel">
+          <div class="glass-card settings-card">
+            <div class="card-header">
+              <h2>System Settings</h2>
+            </div>
+            <div class="settings-body">
+              <div class="settings-group">
+                <h3>🔌 API Access Credentials</h3>
+                <p class="settings-help">The AgriShield server handles Gemini API operations. You can paste your personal Gemini API key below to connect to the live AI service directly. It is saved locally in your browser.</p>
+                <div class="input-btn-row">
+                  <input type="password" id="input-api-key" placeholder="Enter Gemini API Key (AIzaSy...)" class="input-style">
+                  <button id="btn-save-settings" class="btn btn-primary">Save Key</button>
+                </div>
+                <div class="api-status-row">
+                  <span>API Connection Status:</span>
+                  <span id="api-status-badge" class="badge badge-warn">Verifying...</span>
+                </div>
+              </div>
+
+              <div class="settings-group">
+                <h3>🌍 Environmental Telemetry Defaults</h3>
+                <p>Preset default simulation parameters. You can restore these variables anytime.</p>
+                <button id="btn-reset-simulation" class="btn btn-secondary">Reset Simulators to Defaults</button>
+              </div>
+
+              <div class="settings-group">
+                <h3>💻 System Information</h3>
+                <div class="info-list">
+                  <div class="info-item"><span>Engine Model:</span><strong>Google Gemini 1.5 Flash</strong></div>
+                  <div class="info-item"><span>Speech System:</span><strong>HTML5 SpeechRecognition / SpeechSynthesis</strong></div>
+                  <div class="info-item"><span>OS Environment:</span><strong>Windows Server Platform</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js" type="module"></script>
+  <script src="dashboard.js" type="module"></script>
+  <script src="diagnosis.js" type="module"></script>
+  <script src="chat.js" type="module"></script>
+  <script src="optimizer.js" type="module"></script>
+</body>
+</html>
