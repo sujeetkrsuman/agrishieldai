@@ -82,20 +82,20 @@ graph LR
         Stage[Growth Stage Coefficient Kc]
     end
 
-    subgraph Evapotranspiration Formula
+    subgraph EF ["Evapotranspiration Formula"]
         T -->|ET0 = Temp x 0.15| ET0[Reference ET0]
         ET0 -->|ETc = ET0 x Kc| ETc[Crop ETc Need]
     end
 
-    subgraph Soil Adjustment Engine
+    subgraph SAE ["Soil Adjustment Engine"]
         SM -->|Compare with Optimal Min/Max| Comp{Moisture State}
         Comp -->|Waterlogged| Zero[0.0 L/plant Needed]
         Comp -->|Optimal Range| Base[ETc x 0.5 L/plant Needed]
         Comp -->|Dry Soil| Deficit[ETc x adjustmentFactor L/plant Needed]
     end
 
-    Inputs --> Evapotranspiration Formula
-    Inputs --> Soil Adjustment Engine
+    Inputs --> EF
+    Inputs --> SAE
     Zero --> Report[Watering Report & Drip Emitter Runtime]
     Base --> Report
     Deficit --> Report
