@@ -169,29 +169,89 @@ function renderAdvisories(alerts) {
   });
 }
 
-// Generate weather forecast grid
-function generateForecast() {
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const today = new Date().getDay();
-  const weatherIcons = ['☀️', '🌤️', '⛅', '🌦️', '🌧️', '⛈️'];
-  const weatherConds = ['Sunny', 'Mostly Sunny', 'Partly Cloudy', 'Showers', 'Rainy', 'Thunderstorm'];
-  
-  displays.forecastContainer.innerHTML = '';
+// WMO Weather Code Mappings
+const wmoCodes = {
+  0: { text: 'Clear Sky', icon: '☀️' },
+  1: { text: 'Mainly Clear', icon: '🌤️' },
+  2: { text: 'Partly Cloudy', icon: '⛅' },
+  3: { text: 'Overcast', icon: '☁️' },
+  45: { text: 'Foggy', icon: '🌫️' },
+  48: { text: 'Depositing Fog', icon: '🌫️' },
+  51: { text: 'Light Drizzle', icon: '🌦️' },
+  53: { text: 'Moderate Drizzle', icon: '🌦️' },
+  55: { text: 'Heavy Drizzle', icon: '🌦️' },
+  61: { text: 'Slight Rain', icon: '🌧️' },
+  63: { text: 'Moderate Rain', icon: '🌧️' },
+  65: { text: 'Heavy Rain', icon: '🌧️' },
+  80: { text: 'Slight Showers', icon: '🌧️' },
+  81: { text: 'Moderate Showers', icon: '🌧️' },
+  82: { text: 'Violent Showers', icon: '🌧️' },
+  95: { text: 'Thunderstorm', icon: '⛈️' },
+  96: { text: 'Thunderstorm with Hail', icon: '⛈️' },
+  99: { text: 'Thunderstorm with Heavy Hail', icon: '⛈️' }
+};
 
-  for (let i = 1; i <= 5; i++) {
-    const dayName = days[(today + i) % 7];
-    const randIndex = Math.floor(Math.random() * weatherIcons.length);
-    const mockTemp = 24 + Math.floor(Math.random() * 8);
+function getWeatherInfo(code) {
+  return wmoCodes[code] || { text: 'Cloudy', icon: '☁️' };
+}
+
+// Fetch Real Weather and Forecast from Open-Meteo (No key required!)
+async function fetchRealWeather(lat, lon, isInitial = false) {
+  try {
+    const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`);
+    if (!response.ok) throw new Error('Failed to fetch from Open-Meteo');
+    const data = await response.json();
+
+    // 1. Update Current Weather
+    const current = data.current;
+    const temp = Math.round(current.temperature_2m);
+    const humid = Math.round(current.relative_humidity_2m);
+    const wInfo = getWeatherInfo(current.weather_code);
+
+    displays.weatherTemp.textContent = `${temp}°C`;
+    displays.weatherCond.textContent = wInfo.text;
     
-    const card = document.createElement('div');
-    card.className = 'forecast-day-card';
-    card.innerHTML = `
-      <span class="day">${dayName}</span>
-      <span class="icon" title="${weatherConds[randIndex]}">${weatherIcons[randIndex]}</span>
-      <span class="temp">${mockTemp}°C</span>
-    `;
-    displays.forecastContainer.appendChild(card);
+    // Auto-update simulator variables to match real weather
+    sliders.temp.value = temp;
+    displays.tempVal.textContent = `${temp}°C`;
+    state.environment.temperature = temp;
+
+    sliders.humid.value = humid;
+    displays.humidVal.textContent = `${humid}%`;
+    state.environment.humidity = humid;
+
+    evaluateCropHealth();
+
+    // 2. Generate 5-Day Forecast Grid
+    displays.forecastContainer.innerHTML = '';
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    for (let i = 1; i <= 5; i++) {
+      const date = new Date(data.daily.time[i]);
+      const dayName = days[date.getDay()];
+      const dailyCode = data.daily.weather_code[i];
+      const dailyInfo = getWeatherInfo(dailyCode);
+      const maxTemp = Math.round(data.daily.temperature_2m_max[i]);
+
+      const card = document.createElement('div');
+      card.className = 'forecast-day-card';
+      card.innerHTML = `
+        <span class="day">${dayName}</span>
+        <span class="icon" title="${dailyInfo.text}">${dailyInfo.icon}</span>
+        <span class="temp">${maxTemp}°C</span>
+      `;
+      displays.forecastContainer.appendChild(card);
+    }
+  } catch (error) {
+    console.error('Weather Fetch Error:', error);
+    showToast('Failed to load real weather. Using mock weather.', 'warn');
   }
+}
+
+// Generate weather forecast grid (legacy wrapper)
+function generateForecast() {
+  // Default to New Delhi (Lat: 28.61, Lon: 77.20) for initial load
+  fetchRealWeather(28.61, 77.20, true);
 }
 
 // Handle Geolocation API Fetch
@@ -206,28 +266,19 @@ function initLocationFetch() {
     }
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const lat = position.coords.latitude.toFixed(2);
         const lon = position.coords.longitude.toFixed(2);
         
-        showToast(`Location retrieved successfully!`, 'success');
         displays.weatherLoc.textContent = `Lat: ${lat}, Lon: ${lon} (Local)`;
         displays.locationFetchBtn.textContent = '📍 Location Updated';
+        showToast('Real local weather retrieved!', 'success');
         
-        // Slightly vary simulated weather based on actual coordinates
-        const localTemp = Math.round(22 + (Math.sin(lat) * 8));
-        displays.weatherTemp.textContent = `${localTemp}°C`;
-        displays.weatherCond.textContent = 'Cloudy / Humid';
-        
-        // Synchronize simulator with local temp
-        sliders.temp.value = localTemp;
-        displays.tempVal.textContent = `${localTemp}°C`;
-        state.environment.temperature = localTemp;
-        evaluateCropHealth();
+        await fetchRealWeather(lat, lon);
       },
       (error) => {
         console.error('Geolocation Error:', error);
-        showToast('Unable to fetch location. Using simulated local station.', 'warn');
+        showToast('Unable to fetch location. Reverting to default station.', 'warn');
         displays.locationFetchBtn.textContent = '📍 Get Geolocation';
       }
     );
