@@ -1365,8 +1365,13 @@ body.light-mode .chat-bubble.user {
   align-items: center;
 }
 
+.chat-input-row button {
+  flex-shrink: 0;
+}
+
 .chat-input-row input {
   flex-grow: 1;
+  min-width: 0; /* Prevents input from overflowing flex container on mobile */
   background-color: var(--bg-sidebar);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -1664,47 +1669,310 @@ body.light-mode .chat-bubble.user {
    RESPONSIVENESS ADJUSTMENTS
    ========================================== */
 
+/* ==========================================
+   RESPONSIVENESS ADJUSTMENTS
+   ========================================== */
+
+/* 1. Tablet & Large Mobile Landscape (max-width: 1024px) */
 @media (max-width: 1024px) {
-  .app-container {
-    flex-direction: column;
-  }
-  .sidebar {
-    width: 100%;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-    padding: 12px 16px;
-    flex-direction: row;
-    align-items: center;
-  }
-  .brand {
-    margin-bottom: 0;
-  }
-  .nav-menu {
-    flex-direction: row;
-    overflow-x: auto;
-    flex-grow: 0;
-    gap: 4px;
-    padding-bottom: 0;
-  }
-  .nav-item span {
-    display: none;
-  }
-  .sidebar-footer {
-    display: none;
-  }
-  .main-content {
-    height: calc(100vh - 70px);
-  }
   .dashboard-grid, .diagnosis-grid, .optimizer-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
   .chat-container {
     grid-template-columns: 1fr;
-    height: 600px;
+    height: auto;
+    min-height: 550px;
   }
   .chat-sidebar {
     border-right: none;
     border-bottom: 1px solid var(--border-color);
+  }
+}
+
+/* 2. Mobile Portrait & Small Screens (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Transition Sidebar to Fixed Bottom Nav Bar */
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 65px;
+    background-color: var(--bg-sidebar);
+    border-top: 1px solid var(--border-color);
+    border-right: none;
+    padding: 0;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .brand {
+    display: none; /* Hide brand logo in bottom bar */
+  }
+
+  .nav-menu {
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    justify-content: space-around;
+    align-items: center;
+    gap: 0;
+    overflow-x: visible;
+  }
+
+  .nav-item {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 0;
+    width: 20%;
+    height: 100%;
+    border-radius: 0;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    border: none;
+    background: none;
+    flex-grow: 1;
+  }
+
+  .nav-item svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .nav-item:hover svg {
+    transform: none; /* Disable horizontal slide on hover for mobile */
+  }
+
+  .nav-item span {
+    display: inline-block; /* Show text labels in bottom bar */
+    font-size: 0.65rem;
+    font-weight: 500;
+  }
+
+  .nav-item.active {
+    background-color: transparent;
+    color: var(--primary);
+    border-top: 3px solid var(--primary); /* Glowing active indicator line at the top of bottom tab */
+    border-radius: 0;
+  }
+
+  .sidebar-footer {
+    display: none; /* Hide footer badges on mobile sidebar */
+  }
+
+  /* Main content layout adjustments for fixed bottom bar */
+  .main-content {
+    height: calc(100vh - 65px);
+    width: 100%;
+  }
+
+  .content-body {
+    padding: 16px;
+    padding-bottom: 85px; /* Extra padding to avoid content cutting off behind fixed bottom bar */
+  }
+
+  /* Top Bar Adjustments */
+  .top-bar {
+    padding: 0 16px;
+    height: 60px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .crop-selector-container label {
+    display: none; /* Hide label text to save horizontal space */
+  }
+
+  .date-display {
+    display: none; /* Hide date display on small mobile screens */
+  }
+
+  /* Dashboard Tab Adjustments */
+  .hero-card {
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .health-gauge-container {
+    position: static;
+    transform: none;
+    right: auto;
+    top: auto;
+    margin: 10px auto 0 auto;
+    width: 100%;
+    max-width: 200px;
+    padding: 12px;
+  }
+
+  .weather-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .forecast-days {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    gap: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .forecast-day-card {
+    flex-shrink: 0; /* Keep forecast cards from shrinking inside scroll row */
+    width: 75px;
+  }
+
+  /* Diagnosis Tab Adjustments */
+  .report-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .report-stats {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .stat-pill {
+    flex: 1;
+    min-width: 70px;
+  }
+
+  .remedies-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .sample-images-grid {
+    gap: 8px;
+  }
+
+  .sample-card img {
+    height: 50px; /* Make sample card images slightly smaller on mobile */
+  }
+
+  .preview-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Chat Tab Mobile Optimization */
+  .chat-container {
+    height: calc(100vh - 150px);
+    grid-template-columns: 1fr;
+  }
+
+  .chat-sidebar {
+    padding: 12px;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .chat-sidebar-header {
+    display: none; /* Hide header text in chat sidebar */
+  }
+
+  .language-picker-box {
+    width: 100%;
+  }
+
+  .tts-toggle-box {
+    margin-top: 4px;
+  }
+
+  .quick-questions-section {
+    width: 100%;
+  }
+
+  .quick-questions-section h4 {
+    margin-bottom: 6px;
+  }
+
+  .faq-chips {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    gap: 8px;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .faq-chip {
+    white-space: nowrap; /* Keep chips from wrapping */
+    padding: 6px 12px;
+  }
+
+  .chat-history {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .chat-bubble {
+    max-width: 88%;
+    font-size: 0.8rem;
+  }
+
+  .chat-input-row {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .chat-input-row input {
+    padding: 10px 12px;
+  }
+
+  .voice-mic-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* Optimizer Tab Mobile Optimization */
+  .input-row-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .number-input-group label {
+    font-size: 0.65rem; /* Smaller text size for labels */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .number-input-group input {
+    padding: 6px;
+    font-size: 0.8rem;
+  }
+}
+
+/* 3. Small Mobile Devices (max-width: 375px) */
+@media (max-width: 375px) {
+  .input-row-3 {
+    grid-template-columns: 1fr; /* Stack N-P-K inputs on ultra-narrow screens */
+    gap: 8px;
+  }
+  .nav-item span {
+    display: none; /* Hide bottom nav labels on extremely small devices to avoid crowding */
+  }
+  .nav-item svg {
+    width: 22px;
+    height: 22px;
   }
 }
