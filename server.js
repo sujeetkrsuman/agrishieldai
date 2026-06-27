@@ -5,6 +5,7 @@ import multer from 'multer';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import os from 'os';
 
 dotenv.config();
 
@@ -426,10 +427,26 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Start Server
-app.listen(port, () => {
+// Helper to get local IP address
+const getLocalIp = () => {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return 'localhost';
+};
+
+// Start Server listening on all interfaces (0.0.0.0)
+const localIp = getLocalIp();
+app.listen(port, '0.0.0.0', () => {
   console.log(`=======================================================`);
-  console.log(`  AgriShield AI Server Running on http://localhost:${port}`);
+  console.log(`  AgriShield AI Server Running!`);
+  console.log(`  Local Access:   http://localhost:${port}`);
+  console.log(`  Network Access: http://${localIp}:${port}`);
   console.log(`  Serving static UI from public/`);
   console.log(`=======================================================`);
 });
