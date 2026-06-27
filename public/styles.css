@@ -75,6 +75,7 @@ body {
   background-color: var(--bg-app);
   color: var(--text-primary);
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -83,7 +84,9 @@ body {
 .app-container {
   display: flex;
   width: 100vw;
+  width: 100dvw;
   height: 100vh;
+  height: 100dvh;
   position: relative;
 }
 
@@ -256,6 +259,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   position: relative;
 }
 
@@ -1773,6 +1777,7 @@ body.light-mode .chat-bubble.user {
   /* Main content layout adjustments for fixed bottom bar */
   .main-content {
     height: calc(100vh - 65px);
+    height: calc(100dvh - 65px);
     width: 100%;
   }
 
@@ -1876,6 +1881,7 @@ body.light-mode .chat-bubble.user {
   /* Chat Tab Mobile Optimization */
   .chat-container {
     height: calc(100vh - 150px);
+    height: calc(100dvh - 150px);
     grid-template-columns: 1fr;
   }
 
