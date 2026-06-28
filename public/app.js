@@ -74,12 +74,7 @@ export function showToast(message, type = 'info') {
 // Check backend API connection
 export async function checkApiHealth() {
   try {
-    const headers = {};
-    if (state.apiKey) {
-      headers['Authorization'] = `Bearer ${state.apiKey}`;
-    }
-
-    const response = await fetch('/api/health', { headers });
+    const response = await fetch('/api/health');
     if (!response.ok) throw new Error('Health check request failed');
     
     const data = await response.json();
