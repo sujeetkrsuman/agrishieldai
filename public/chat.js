@@ -182,7 +182,8 @@ async function sendMessage() {
 
     if (!response.ok) {
       const err = await response.json();
-      throw new Error(err.error || 'Failed to query chat server');
+      const detailedMessage = err.details ? `${err.error}: ${err.details}` : (err.error || 'Failed to query chat server');
+      throw new Error(detailedMessage);
     }
 
     const data = await response.json();
@@ -200,7 +201,7 @@ async function sendMessage() {
   } catch (error) {
     console.error('Chat error:', error);
     typingIndicator.remove();
-    appendBubble('Sorry, I encountered an error answering your question. Please make sure the server is online and try again.', 'bot');
+    appendBubble(`Sorry, I encountered an error: "${error.message}". Please verify your internet connection, server logs, or API Key.`, 'bot');
     showToast('Failed to get chat response', 'error');
   }
 }
