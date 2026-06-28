@@ -190,14 +190,14 @@ const mockChatResponses = {
     help_watering: "For Tomatoes, soil moisture should be between 60-80%. Since your soil moisture is low, water the plants at the base with about 2-3 liters of water early in the morning to prevent evaporation.",
     help_fertilizer: "To improve tomato health, balance your N-P-K. Add organic compost for Nitrogen, bone meal for Phosphorus, and wood ash or potash for Potassium. Maintain soil pH between 6.0 and 6.8.",
     help_blight: "Late blight spreads in damp, cool conditions. Prune lower leaves to improve airflow, apply copper fungicide, and ensure you do not water the leaves directly.",
-    unknown: "I understand your concern about your crop. Under the current simulated conditions, I recommend maintaining a consistent watering schedule and checking the leaves daily for any discolored spots. If you see spots, please upload a photo to the Disease Diagnostic Lab tab for an instant diagnosis!"
+    unknown: "I understand your concern. Currently, AgriShield is running in Demo Mode. To ask custom questions and get dynamic, unique answers from the AI, please enter your Gemini API Key in the Settings page! For now, you can ask about: watering, fertilizer, or blight."
   },
   hi: {
     welcome: "नमस्ते! मैं आपका एआई कृषि सलाहकार हूं। आज मैं आपकी क्या मदद कर सकता हूं?",
     help_watering: "टमाटर के लिए मिट्टी की नमी 60-80% होनी चाहिए। चूंकि आपकी मिट्टी की नमी कम है, इसलिए सुबह-सुबह पौधों की जड़ों में लगभग 2-3 लीटर पानी दें ताकि वाष्पीकरण न हो।",
     help_fertilizer: "टमाटर के स्वास्थ्य को बेहतर बनाने के लिए N-P-K को संतुलित करें। नाइट्रोजन के लिए जैविक खाद, फास्फोरस के लिए हड्डी का चूरा (हड्डी का भोजन), और पोटेशियम के लिए लकड़ी की राख या पोटाश मिलाएं। मिट्टी का pH 6.0 से 6.8 के बीच रखें।",
     help_blight: "पछेती झुलसा (Late blight) नम और ठंडी परिस्थितियों में फैलता है। हवा के प्रवाह को बेहतर बनाने के लिए निचली पत्तियों को काटें, कॉपर कवकनाशी (copper fungicide) का उपयोग करें, और पत्तियों पर सीधे पानी न डालें।",
-    unknown: "मैं आपकी फसल के प्रति आपकी चिंता समझता हूं। वर्तमान परिस्थितियों में, मेरा सुझाव है कि आप नियमित रूप से पानी दें और पत्तियों पर किसी भी धब्बे की रोजाना जांच करें। यदि आपको धब्बे दिखते हैं, तो तुरंत निदान के लिए रोग निदान लैब (Disease Diagnostic Lab) टैब पर एक फोटो अपलोड करें!"
+    unknown: "मैं आपकी चिंता समझता हूं। वर्तमान में, एग्रीशील्ड डेमो मोड में चल रहा है। लाइव कृत्रिम बुद्धिमत्ता (AI) से विशिष्ट और नए उत्तर पाने के लिए, कृपया सेटिंग्स (Settings) पेज में अपनी जेमिनी एपीआई कुंजी (Gemini API Key) दर्ज करें! अभी के लिए, आप इनसे संबंधित प्रश्न पूछ सकते हैं: सिंचाई/पानी, खाद/NPK, या बीमारी/झुलसा।"
   },
   te: {
     welcome: "నమస్కారం! నేను మీ AI వ్యవసాయ సలహాదారుని. ఈరోజు నేను మీకు ఎలా సహాయం చేయగలను?",
