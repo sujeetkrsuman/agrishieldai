@@ -1670,8 +1670,14 @@ body.light-mode .chat-bubble.user {
 }
 
 /* ==========================================
-   RESPONSIVENESS ADJUSTMENTS
+   SIDEBAR DRAWER TOGGLE & OVERLAY CONTROL
    ========================================== */
+.sidebar-toggle-btn {
+  display: none;
+}
+.sidebar-overlay {
+  display: none;
+}
 
 /* ==========================================
    RESPONSIVENESS ADJUSTMENTS
@@ -1696,110 +1702,117 @@ body.light-mode .chat-bubble.user {
 
 /* 2. Mobile Portrait & Small Screens (max-width: 768px) */
 @media (max-width: 768px) {
-  /* Transition Sidebar to Fixed Bottom Nav Bar */
-  .app-container {
-    flex-direction: column;
-  }
-  
-  .sidebar {
+  /* Enable mobile sidebar drawer overlay */
+  .sidebar-overlay {
+    display: block;
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
-    width: 100%;
-    height: 65px;
-    background-color: var(--bg-sidebar);
-    border-top: 1px solid var(--border-color);
-    border-right: none;
-    padding: 0;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 1000;
+    bottom: 0;
+    background-color: rgba(9, 14, 11, 0.8);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 1050;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
   }
 
-  .brand {
-    display: none; /* Hide brand logo in bottom bar */
-  }
-
-  .nav-menu {
-    flex-direction: row;
-    width: 100%;
-    height: 100%;
-    justify-content: space-around;
-    align-items: center;
-    gap: 0;
-    overflow-x: visible;
-  }
-
-  .nav-item {
-    flex-direction: column;
+  /* Hamburger Menu Toggle Button */
+  .sidebar-toggle-btn {
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 6px 0;
-    width: 20%;
-    height: 100%;
-    border-radius: 0;
-    font-size: 0.65rem;
-    color: var(--text-secondary);
-    border: none;
-    background: none;
-    flex-grow: 1;
+    background: var(--bg-sidebar);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .sidebar-toggle-btn:hover {
+    background-color: var(--bg-card);
+    border-color: var(--primary);
+  }
+  .sidebar-toggle-btn svg {
+    width: 22px;
+    height: 22px;
   }
 
-  .nav-item svg {
-    width: 20px;
-    height: 20px;
+  /* Slide-out Sidebar Drawer */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    height: 100dvh;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    border-top: none;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1100;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.6);
   }
-  
-  .nav-item:hover svg {
-    transform: none; /* Disable horizontal slide on hover for mobile */
+  .sidebar.open {
+    transform: translateX(0);
   }
 
-  .nav-item span {
-    display: inline-block; /* Show text labels in bottom bar */
-    font-size: 0.65rem;
-    font-weight: 500;
-  }
-
-  .nav-item.active {
-    background-color: transparent;
-    color: var(--primary);
-    border-top: 3px solid var(--primary); /* Glowing active indicator line at the top of bottom tab */
-    border-radius: 0;
-  }
-
-  .sidebar-footer {
-    display: none; /* Hide footer badges on mobile sidebar */
-  }
-
-  /* Main content layout adjustments for fixed bottom bar */
+  /* Main content layout adjustments for toggleable sidebar */
   .main-content {
-    height: calc(100vh - 65px);
-    height: calc(100dvh - 65px);
+    height: 100vh;
+    height: 100dvh;
     width: 100%;
   }
 
   .content-body {
     padding: 16px;
-    padding-bottom: 85px; /* Extra padding to avoid content cutting off behind fixed bottom bar */
+    padding-bottom: 24px; /* Reset bottom padding spacer */
   }
 
   /* Top Bar Adjustments */
   .top-bar {
     padding: 0 16px;
     height: 60px;
-    flex-direction: row;
-    justify-content: space-between;
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+  
+  .header-actions {
+    margin-left: auto;
   }
 
   .crop-selector-container label {
     display: none; /* Hide label text to save horizontal space */
   }
 
+  .dropdown-style {
+    max-width: 140px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
   .date-display {
-    display: none; /* Hide date display on small mobile screens */
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
   }
 
   /* Dashboard Tab Adjustments */
@@ -1973,12 +1986,5 @@ body.light-mode .chat-bubble.user {
   .input-row-3 {
     grid-template-columns: 1fr; /* Stack N-P-K inputs on ultra-narrow screens */
     gap: 8px;
-  }
-  .nav-item span {
-    display: none; /* Hide bottom nav labels on extremely small devices to avoid crowding */
-  }
-  .nav-item svg {
-    width: 22px;
-    height: 22px;
   }
 }

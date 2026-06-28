@@ -29,7 +29,10 @@ const elements = {
   inputApiKey: document.getElementById('input-api-key'),
   btnSaveSettings: document.getElementById('btn-save-settings'),
   dateDisplay: document.getElementById('date-display'),
-  toastContainer: document.getElementById('toast-container')
+  toastContainer: document.getElementById('toast-container'),
+  sidebarToggle: document.getElementById('sidebar-toggle'),
+  sidebarOverlay: document.getElementById('sidebar-overlay'),
+  sidebar: document.querySelector('.sidebar')
 };
 
 // Crop Threshold Definitions
@@ -140,8 +143,29 @@ function setupUI() {
     item.addEventListener('click', () => {
       const tabId = item.getAttribute('data-tab');
       switchTab(tabId);
+      
+      // Close sidebar drawer on mobile after selection
+      if (elements.sidebar && elements.sidebar.classList.contains('open')) {
+        elements.sidebar.classList.remove('open');
+        elements.sidebarOverlay.classList.remove('active');
+      }
     });
   });
+
+  // Mobile Sidebar Toggle Controllers
+  if (elements.sidebarToggle) {
+    elements.sidebarToggle.addEventListener('click', () => {
+      if (elements.sidebar) elements.sidebar.classList.toggle('open');
+      if (elements.sidebarOverlay) elements.sidebarOverlay.classList.toggle('active');
+    });
+  }
+
+  if (elements.sidebarOverlay) {
+    elements.sidebarOverlay.addEventListener('click', () => {
+      if (elements.sidebar) elements.sidebar.classList.remove('open');
+      if (elements.sidebarOverlay) elements.sidebarOverlay.classList.remove('active');
+    });
+  }
 
   // Active Crop selection
   elements.cropSelect.addEventListener('change', (e) => {
