@@ -288,7 +288,7 @@ app.post('/api/diagnose', upload.single('image'), async (req, res) => {
     }
 
     const model = client.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-flash-latest",
       generationConfig: { responseMimeType: "application/json" }
     });
 
@@ -363,7 +363,7 @@ app.post('/api/chat', async (req, res) => {
     }
 
     // Live Gemini Chat Code
-    const model = client.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = client.getGenerativeModel({ model: "gemini-flash-latest" });
 
     // Prepare system instructions and contextual prompt
     const languageNames = {
